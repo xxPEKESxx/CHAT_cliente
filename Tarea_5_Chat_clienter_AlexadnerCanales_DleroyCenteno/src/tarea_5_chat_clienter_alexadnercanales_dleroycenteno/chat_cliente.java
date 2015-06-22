@@ -8,9 +8,13 @@ package tarea_5_chat_clienter_alexadnercanales_dleroycenteno;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class chat_cliente extends javax.swing.JFrame 
 {
@@ -73,7 +77,22 @@ public class chat_cliente extends javax.swing.JFrame
     }
 
     //--------------------------//
-    
+   public void retornos() throws UnknownHostException{
+//Obtener nombre y direccion IP del equipo local juntos
+       InetAddress direccion = InetAddress.getLocalHost();
+       System.out.println ("Localhost = "+direccion);
+
+       //Obtener nombre y direccion Ip del equipo local por separado
+       System.out.println("HostAddress"+ direccion.getHostAddress());
+       System.out.println("HostName "+direccion.getHostName());
+
+       //Obtener el nombre y direccion IP de un host remoto mediente su nombre
+       System.out.println("Direccion: " + direccion.getByName("www.utez.edu.mx"));
+
+
+   
+
+}
     public void Disconnect() 
     {
         try 
@@ -193,6 +212,12 @@ public class chat_cliente extends javax.swing.JFrame
         b_connect.setText("Connect");
         b_connect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
+                
+                try {
+                    retornos();
+                } catch (UnknownHostException ex) {
+                    Logger.getLogger(chat_cliente.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 b_connectActionPerformed(evt);
             }
         });
@@ -313,6 +338,12 @@ public class chat_cliente extends javax.swing.JFrame
     }                                           
 
     private void b_connectActionPerformed(java.awt.event.ActionEvent evt) {                                          
+        InetAddress direccion = null;
+        try {
+            direccion = InetAddress.getLocalHost();
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(chat_cliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
         if (isConnected == false) 
         {
             username = tf_username.getText();
@@ -324,7 +355,7 @@ public class chat_cliente extends javax.swing.JFrame
                 InputStreamReader streamreader = new InputStreamReader(sock.getInputStream());
                 reader = new BufferedReader(streamreader);
                 writer = new PrintWriter(sock.getOutputStream());
-                writer.println(username + ":has connected.:Connect");
+                writer.println(username + ":has connected.:Connect  "+direccion);
                 writer.flush(); 
                 isConnected = true; 
             } 
@@ -386,6 +417,8 @@ public class chat_cliente extends javax.swing.JFrame
     }                                           
 
     private void b_sendActionPerformed(java.awt.event.ActionEvent evt) {                                       
+       
+        
         String nothing = "";
         if ((tf_chat.getText()).equals(nothing)) {
             tf_chat.setText("");
